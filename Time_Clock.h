@@ -15,6 +15,7 @@ public:
 	void TwelveOrTwentyFour();
 	void ClockSerialPrintTime();
   int TimeinInt();
+  bool Need_PM();
 
 private:
 

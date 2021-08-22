@@ -42,7 +42,7 @@ void loop()
     //If changed, update the NixieClock display
     if (encoder.ButtonPressCheck()) {
         time_clock.TwelveOrTwentyFour(); //Call clock class to swap 24/12hour configuration
-        nixiedisplay.NumberToPrint(time_clock.TimeinInt());
+        nixiedisplay.NumberToPrint(time_clock.TimeinInt(), time_clock.Need_PM());
     }
 
     //Check to see is encoder has moved, call time_clock set function
