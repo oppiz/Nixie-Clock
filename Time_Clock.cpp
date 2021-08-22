@@ -106,7 +106,7 @@ void Time_Clock::ClockSerialPrintTime() {
     }
 }
 
-/* Serial out time in nice format
+/* Return time in int
 */
 int Time_Clock::TimeinInt() {
     int time = 0;
@@ -125,4 +125,16 @@ int Time_Clock::TimeinInt() {
         time = time + Clock_Chip.getMinute();
     }
     return time;
+}
+
+/* This function returns true if on 12HOUR and in the PM hours
+*/
+bool Time_Clock::Need_PM(){
+    
+    if (h12Flag && pmFlag){
+        return true;
+    }
+
+    return false;
+    
 }

@@ -30,17 +30,16 @@ bool Encoder::EncoderCheck(Time_Clock *time_clock) {
     // If the previous and the current state of the inputCLK are different then a pulse has occured
     if (currentStateCLK != previousStateCLK) {
         // If the inputDT state is different than the inputCLK state then
+        Change = true;
         if (digitalRead(inputDT) != currentStateCLK) {
             // Encoder is rotating counterclockwise
             //Serial.println("CCW");
-            time_clock->SetTimeMWithMinFromMidnight(time_clock->MinutesFromMidnight() - 1);    
-            Change = true;
+            time_clock->SetTimeMWithMinFromMidnight(time_clock->MinutesFromMidnight() - 1);             
         }
         else {
             // Encoder is rotating clockwise
             //Serial.println("CW");
             time_clock->SetTimeMWithMinFromMidnight(time_clock->MinutesFromMidnight() + 1);
-            Change = true;
         }
     }
     // Update previousStateCLK with the current state

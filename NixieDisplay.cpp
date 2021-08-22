@@ -30,7 +30,10 @@ NixieDisplay::NixieDisplay(int latch_pin, int clock_pin, int data_pin, int oe_pi
 }
 
 
-void NixieDisplay::NumberToPrint(int num) {
+/* This function takes a up to 4 digit int and writes it to Qt(8) 74HC595 chips
+*  For ths design in question, two chips are used per digit
+*/
+void NixieDisplay::NumberToPrint(int num, bool PM) {
 
     //Split time into digits needed to display
     int HF = num % 10;
@@ -44,7 +47,16 @@ void NixieDisplay::NumberToPrint(int num) {
     
     byte HF_A, HF_B, HS_A, HS_B, MF_A, MF_B, MS_A, MS_B;
 
+    //Convert given posistion ot byte to 1
+    //5 -> 00000100
     bitSet(HF_A, AIndex(HF));
+    
+    //Sets lower comma, if PM
+    if (PM){
+        bitSet(HF_A, 3);
+    }
+    
+
     bitSet(HF_B, BIndex(HF));
     bitSet(HS_A, AIndex(HS));
     bitSet(HS_B, BIndex(HS));
@@ -52,7 +64,8 @@ void NixieDisplay::NumberToPrint(int num) {
     bitSet(MF_B, BIndex(MF));
     bitSet(MS_A, AIndex(MS));
     bitSet(MS_B, BIndex(MS));
-      
+
+    //Turn all output off, then write datasteam, turn output back on
     digitalWrite(OE_Pin, HIGH);
     digitalWrite(Latch_Pin, LOW);
     shiftOut(Data_Pin, Clock_Pin, LSBFIRST, MS_A);
@@ -63,34 +76,38 @@ void NixieDisplay::NumberToPrint(int num) {
     shiftOut(Data_Pin, Clock_Pin, LSBFIRST, HS_B);
     shiftOut(Data_Pin, Clock_Pin, LSBFIRST, HF_A);
     shiftOut(Data_Pin, Clock_Pin, LSBFIRST, HF_B);
-
     
     digitalWrite(Latch_Pin, HIGH);
     digitalWrite(OE_Pin, LOW);
 
-    //ChipA
-    //1 == NULL
-    //2 == 9
-    //4 == 0
-    //8 == right comma
-    //16 == left comm
-    //32 == 1
-    //64 == 2
-    
-    //ChipB
-    //1 == NULL
-    //2 == 3
-    //4 == 4
-    //8 == 5
-    //16 == 6
-    //32 == 7
-    //64 == 8
+
 }   
 
 
-//Switch between the number desired and the pin needed on the board.
-//Numbers 0,1,2,9 are on Chip A
-//Numbers 3,4,5,6,7,8 are on Chip B
+/*Switch between the number desired and the pin needed on the board.
+* This would be spefic to the board layout/design
+* Numbers 0,1,2,9 are on Chip A
+* Numbers 3,4,5,6,7,8 are on Chip B
+
+    ChipA
+    1 == NULL
+    2 == 9
+    4 == 0
+    8 == right comma
+    16 == left comm
+    32 == 1
+    64 == 2
+    
+    ChipB
+    1 == NULL
+    2 == 3
+    4 == 4
+    8 == 5
+    16 == 6
+    32 == 7
+    64 == 8
+
+*/
 int NixieDisplay::AIndex(int i) {
     switch (i) {
     case 0:

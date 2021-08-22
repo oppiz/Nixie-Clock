@@ -45,15 +45,15 @@ void loop()
     }
 
     //Check to see is encoder has moved, call time_clock set function
+    //If changed, update the NixieClock display
     if (encoder.EncoderCheck(&time_clock)){
-      nixiedisplay.NumberToPrint(time_clock.TimeinInt());
+      nixiedisplay.NumberToPrint(time_clock.TimeinInt(), time_clock.Need_PM());
     }
 
     //Uses the sloppy CPU clock time to limit the amount of checks to RTC chip
     if ((millis() - LoopTime) > 10000) {
         time_clock.ClockSerialPrintTime();
-        Serial.println(time_clock.TimeinInt());
-        nixiedisplay.NumberToPrint(time_clock.TimeinInt());
+        nixiedisplay.NumberToPrint(time_clock.TimeinInt(), time_clock.Need_PM());
         LoopTime = millis(); //set looptime to now
     }
 

@@ -8,7 +8,8 @@ public:
 
 	NixieDisplay(int latch_pin, int clock_pin, int data_pin, int oe_pin);
 
-	void NumberToPrint(int num);
+	void NumberToPrint(int num, bool PM);
+	bool Need_PM();
   
 
 
