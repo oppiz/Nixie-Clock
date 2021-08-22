@@ -30,7 +30,7 @@ void setup()
 
     Serial.begin(9600);
    
-    delay(500);
+    delay(500); //Give time for everything to power up and settle down
     LoopTime = millis();//set the looptime first time
 
 }
@@ -38,7 +38,8 @@ void setup()
 
 void loop()
 {
-    
+    //Check to see if the encoder button has been pressed
+    //If changed, update the NixieClock display
     if (encoder.ButtonPressCheck()) {
         time_clock.TwelveOrTwentyFour(); //Call clock class to swap 24/12hour configuration
         nixiedisplay.NumberToPrint(time_clock.TimeinInt());
