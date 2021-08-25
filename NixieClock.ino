@@ -24,6 +24,7 @@ Time_Clock time_clock(true);
 Encoder encoder(6, 12, 13);
 
 unsigned long LoopTime; //used to only check time every so often
+bool first_startup = false; //This is used to "burn in" the nixie tubes on first start. After first start this should be false.
 
 void setup()
 {
@@ -31,7 +32,14 @@ void setup()
     Serial.begin(9600);
    
     delay(500); //Give time for everything to power up and settle down
+    
+    //If first startup, burn in new tubes
+    if (first_startup){
+        nixiedisplay.BurnIn();
+    }
+
     LoopTime = millis();//set the looptime first time
+
 
 }
 

@@ -10,6 +10,7 @@ public:
 
 	void NumberToPrint(int num, bool PM);
 	bool Need_PM();
+	void BurnIn();
   
 
 
