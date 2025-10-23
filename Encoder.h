@@ -15,7 +15,7 @@ public:
 	bool ButtonPressCheck();
 
 private:
-
+  
 	int  inputCLK, inputDT, HourButton;
 	bool PressLock; //used to prevent mutiple button presses
 	int currentStateCLK, previousStateCLK; //Used for encoder

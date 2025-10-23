@@ -1,4 +1,3 @@
-
 #include "Time_Clock.h"
 #include <Wire.h>
 #include <DS3231.h>
@@ -63,7 +62,7 @@ void Time_Clock::SetTimeMWithMinFromMidnight(int TotalMin) {
 
 
 /*This Function checks to see if the clock is in 12 or 24 hour mode
-The chip does not seem to handle 23 hour to AM/PM, so time must be reset after change
+The chip does not seem to handle 24 hour to AM/PM, so time must be reset after change
 Save time, adjust mode and resave time
 h12Flag -> 24hour = false, 12hour = true
 pmFlag -> True = PM, False = AM
@@ -81,6 +80,21 @@ void Time_Clock::TwelveOrTwentyFour() {
         SetTimeMWithMinFromMidnight(temp);
     }
 
+}
+
+/*Set time was added to allow the 24/12 hour to be set without push button
+ * The push button triggers randomly and causes issues
+ */
+void Time_Clock::Set24Hour(){
+  int temp = MinutesFromMidnight();
+  Clock_Chip.setClockMode(false);
+  SetTimeMWithMinFromMidnight(temp);
+}
+
+void Time_Clock::Set12Hour(){
+  int temp = MinutesFromMidnight();
+  Clock_Chip.setClockMode(true);
+  SetTimeMWithMinFromMidnight(temp);
 }
 
 /* Serial out time in nice format
@@ -107,7 +121,7 @@ void Time_Clock::ClockSerialPrintTime() {
     }
 }
 
-/* Return time in int
+/* Serial out time in nice format
 */
 int Time_Clock::TimeinInt() {
     int time = 0;
@@ -126,16 +140,4 @@ int Time_Clock::TimeinInt() {
         time = time + Clock_Chip.getMinute();
     }
     return time;
-}
-
-/* This function returns true if on 12HOUR and in the PM hours
-*/
-bool Time_Clock::Need_PM(){
-    
-    if (h12Flag && pmFlag){
-        return true;
-    }
-
-    return false;
-    
 }

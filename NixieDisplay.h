@@ -6,19 +6,16 @@ class NixieDisplay {
 
 public:
 
-	NixieDisplay(int latch_pin, int clock_pin, int data_pin, int oe_pin);
+	NixieDisplay(int HWPINS[16]);
 
-	void NumberToPrint(int num, bool PM);
-	bool Need_PM();
-	void BurnIn();
+	void NumberToPrint(int num);
   
 
 
 private:
-	int Latch_Pin, Clock_Pin, Data_Pin, OE_Pin;
 
-	int AIndex(int i);
-	int BIndex(int i);
+int HW_PINS[16];
+void PrintNumber(int NUM, int A, int B, int C, int D);
 
 };
 

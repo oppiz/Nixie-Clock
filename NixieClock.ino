@@ -9,60 +9,66 @@
 #include "Encoder.h"
 
 /*
-latchPin 8  // Latch pin of 74HC595 is connected to Digital pin 5
-clockPin 5 // Clock pin of 74HC595 is connected to Digital pin 6
-dataPin 10  // Data pin of 74HC595 is connected to Digital pin 4
-OE 9 //Enable Bit
-
-inputCLK 6 // Encoder counter
-inputDT 12 // Encouder counter
-HourButton 13 // Encoder button press
+SDMA = 17; //PB0
+SDMB = 19; //PF6
+SDMC = 18; //PF7
+SDMD = 7; //PE6
+FDMA = 23; //PF0
+FDMB = 21; //PF4
+FDMC = 20; //PF5
+FDMD = 22; //PF1
+SDHA = 13; //PC7
+SDHB = 10; //PB6
+SDHC = 9; //PB5
+SDHD = 5; //PC6
+FDHA = 8; //PB4
+FDHB = 12; //PD6
+FDHC = 4; //PD4
+FDHD = 6; //PD7
+  
+inputCLK 0 // Encoder counter
+inputDT 1 // Encouder counter
+HourButton 30 // Encoder button press
 */
 
-NixieDisplay nixiedisplay(8, 5, 10, 9); 
+
+int HWPINS[16] = {17, 19, 18, 7, 23, 21, 20, 22, 13, 10, 9, 5, 8, 12, 4, 6};
+
+NixieDisplay nixiedisplay(HWPINS); 
 Time_Clock time_clock(true);
-Encoder encoder(6, 12, 13);
+Encoder encoder(0, 1, 30);
 
 unsigned long LoopTime; //used to only check time every so often
-bool first_startup = false; //This is used to "burn in" the nixie tubes on first start. After first start this should be false.
 
 void setup()
 {
 
     Serial.begin(9600);
    
-    delay(500); //Give time for everything to power up and settle down
-    
-    //If first startup, burn in new tubes
-    if (first_startup){
-        nixiedisplay.BurnIn();
-    }
-
+    delay(500);
     LoopTime = millis();//set the looptime first time
-
-
+    time_clock.Set24Hour();
 }
 
 
 void loop()
 {
-    //Check to see if the encoder button has been pressed
-    //If changed, update the NixieClock display
+    
     if (encoder.ButtonPressCheck()) {
         time_clock.TwelveOrTwentyFour(); //Call clock class to swap 24/12hour configuration
-        nixiedisplay.NumberToPrint(time_clock.TimeinInt(), time_clock.Need_PM());
+        nixiedisplay.NumberToPrint(time_clock.TimeinInt());
     }
 
     //Check to see is encoder has moved, call time_clock set function
-    //If changed, update the NixieClock display
     if (encoder.EncoderCheck(&time_clock)){
-      nixiedisplay.NumberToPrint(time_clock.TimeinInt(), time_clock.Need_PM());
+      nixiedisplay.NumberToPrint(time_clock.TimeinInt());
     }
 
     //Uses the sloppy CPU clock time to limit the amount of checks to RTC chip
     if ((millis() - LoopTime) > 10000) {
         time_clock.ClockSerialPrintTime();
-        nixiedisplay.NumberToPrint(time_clock.TimeinInt(), time_clock.Need_PM());
+        //Serial.println(time_clock.TimeinInt());
+        nixiedisplay.NumberToPrint(time_clock.TimeinInt());
         LoopTime = millis(); //set looptime to now
     }
 
